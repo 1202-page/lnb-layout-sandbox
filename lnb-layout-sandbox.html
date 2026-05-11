@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobKorea 기업회원 — LNB 너비 테스트</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+      font-size: 14px; color: #1A1A1A; background: #fff; min-width: 1280px;
+    }
+    button { cursor: pointer; border: none; background: none; }
+
+    /* ===== Utility Bar ===== */
+    .util-bar {
+      height: 40px; background: #fff; border-bottom: 1px solid #E5E5E3;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 32px; gap: 16px; font-size: 12px; color: #555;
+    }
+    .util-bar a { color: #555; text-decoration: none; }
+    .util-bar a:hover { color: #534AB7; }
+    .util-bar .divider { color: #D0D0CE; }
+    .util-bar .btn-login {
+      background: #534AB7; color: #fff; padding: 4px 12px;
+      border-radius: 4px; font-size: 12px; text-decoration: none;
+    }
+
+    /* ===== Layout ===== */
+    .layout { display: flex; width: 100%; min-height: calc(100vh - 40px); }
+
+    /* ===== LNB ===== */
+    .lnb {
+      --lnb-w: 260px;
+      width: var(--lnb-w); min-width: var(--lnb-w);
+      background: #F8F8F7; border-right: 1px solid #E5E5E3;
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      transition: width 250ms cubic-bezier(0.4,0,0.2,1), min-width 250ms cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden;
+    }
+    .lnb.collapsed { width: 52px !important; min-width: 52px !important; }
+
+    /* LNB Header */
+    .lnb-header {
+      height: 52px; min-height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 10px; border-bottom: 1px solid #E5E5E3; flex-shrink: 0;
+    }
+    .lnb-title {
+      font-size: 14px; font-weight: 700; color: #1A1A1A;
+      white-space: nowrap; overflow: hidden; opacity: 1; transition: opacity 200ms;
+    }
+    .lnb.collapsed .lnb-title { opacity: 0; pointer-events: none; }
+
+    .lnb-toggle {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: 6px; flex-shrink: 0; color: #555; transition: background 150ms;
+    }
+    .lnb-toggle:hover { background: #EEEEED; }
+    .lnb-toggle svg { transition: transform 250ms cubic-bezier(0.4,0,0.2,1); }
+    .lnb.collapsed .lnb-toggle svg { transform: rotate(180deg); }
+
+    /* CTA */
+    .lnb-cta { margin: 12px 10px; flex-shrink: 0; }
+    .lnb-cta button {
+      width: 100%; height: 36px; background: #534AB7; color: #fff;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      white-space: nowrap; transition: background 150ms; overflow: hidden;
+    }
+    .lnb-cta button:hover { background: #4239A0; }
+    .cta-text { opacity: 1; transition: opacity 200ms; overflow: hidden; max-width: 200px; }
+    .lnb.collapsed .cta-text { opacity: 0; max-width: 0; }
+
+    /* Nav */
+    .lnb-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 0; }
+    .lnb-nav::-webkit-scrollbar { width: 4px; }
+    .lnb-nav::-webkit-scrollbar-thumb { background: #D0D0CE; border-radius: 2px; }
+
+    .nav-section { padding: 16px 0 4px; }
+    .nav-section:first-child { padding-top: 4px; }
+    .section-label {
+      font-size: 11px; font-weight: 600; color: #999;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 0 14px 4px; white-space: nowrap; overflow: hidden;
+      opacity: 1; transition: opacity 200ms;
+    }
+    .lnb.collapsed .section-label { opacity: 0; }
+
+    .nav-item {
+      position: relative; display: flex; align-items: center;
+      height: 36px; padding: 0 10px; margin: 1px 8px;
+      border-radius: 6px; gap: 10px; cursor: pointer;
+      white-space: nowrap; color: #3A3A3A; font-size: 14px;
+      transition: background 150ms; border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: #F0F0EE; }
+    .nav-item.active {
+      background: #FFFFFF; border-left-color: #534AB7;
+      color: #534AB7; font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .lnb.collapsed .nav-item { margin: 1px 4px; justify-content: center; padding: 0; }
+    .nav-icon { flex-shrink: 0; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+    .nav-label { overflow: hidden; opacity: 1; transition: opacity 200ms; flex: 1; }
+    .lnb.collapsed .nav-label { opacity: 0; width: 0; }
+
+    .nav-badge {
+      background: #534AB7; color: #fff; font-size: 10px; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px; flex-shrink: 0; transition: opacity 200ms;
+    }
+    .lnb.collapsed .nav-badge { opacity: 0; width: 0; padding: 0; }
+
+    .nav-tooltip {
+      position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+      background: #1A1A1A; color: #fff; font-size: 12px; padding: 5px 10px;
+      border-radius: 6px; white-space: nowrap; pointer-events: none;
+      opacity: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .nav-tooltip::before {
+      content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%);
+      border: 5px solid transparent; border-right-color: #1A1A1A;
+    }
+    .lnb.collapsed .nav-item:hover .nav-tooltip { opacity: 1; }
+    .lnb-footer { border-top: 1px solid #E5E5E3; padding: 4px 0; flex-shrink: 0; }
+
+    /* ── Editable labels ── */
+    [contenteditable="true"] {
+      outline: 1.5px solid rgba(83,74,183,0.55) !important;
+      border-radius: 3px;
+      padding: 1px 4px;
+      cursor: text;
+      background: rgba(83,74,183,0.06) !important;
+      min-width: 20px;
+      caret-color: #534AB7;
+    }
+
+    /* ── Edit icon ── */
+    .edit-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      width: 14px; height: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms;
+      color: #ABABAB;
+    }
+    /* nav-item: show on row hover */
+    .lnb:not(.collapsed) .nav-item:hover .edit-icon { opacity: 1; }
+    /* section-label row: show on row hover */
+    .lnb:not(.collapsed) .section-label-row:hover .edit-icon { opacity: 1; }
+    /* lnb-header title: show on header hover */
+    .lnb:not(.collapsed) .lnb-header:hover .edit-icon { opacity: 1; }
+    /* cta: show on button hover */
+    .lnb:not(.collapsed) .lnb-cta button:hover .edit-icon { opacity: 1; }
+    /* hide while editing */
+    [contenteditable="true"] ~ .edit-icon { opacity: 0 !important; }
+    /* hide in collapsed state */
+    .lnb.collapsed .edit-icon { display: none; }
+
+    /* section-label wrapper (flex row for label + icon) */
+    .section-label-row {
+      display: flex; align-items: center; gap: 4px;
+      padding: 0 10px 4px 14px;
+    }
+    .section-label-row .section-label {
+      padding: 0; /* padding moved to row */
+    }
+
+    /* ===== Content Area ===== */
+    .content { flex: 1; padding: 32px; background: #fff; min-width: 0; position: relative; }
+    .content-inner { max-width: none; width: 100%; position: relative; }
+
+    /* Page content — wireframe */
+    .page-title-area {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .page-title {
+      height: 28px; width: 160px;
+      background: #D4D4D4; border-radius: 5px;
+    }
+    .page-action {
+      height: 32px; width: 88px;
+      background: #C4BAF0; border-radius: 6px;
+    }
+    .toolbar-area {
+      display: flex; gap: 8px; margin-bottom: 20px;
+    }
+    .toolbar-chip {
+      height: 32px; border-radius: 6px; background: #E9E9E8;
+    }
+    .main-block {
+      width: 100%; border-radius: 8px;
+      background: #F4F4F3;
+      border: 1.5px dashed #D4D4D4;
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 300px);
+    }
+    .main-block-label {
+      font-size: 13px; color: #ABABAB; font-weight: 500; letter-spacing: 0.02em;
+    }
+
+    /* =====================================================
+       GUIDE OVERLAY SYSTEM
+    ===================================================== */
+    #ruler {
+      position: fixed; top: 0; left: 0; right: 0; height: 48px;
+      pointer-events: none; z-index: 9990; overflow: hidden; display: none;
+    }
+    #ruler.on { display: block; }
+    #ruler::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 1px; background: rgba(0,0,0,0.08);
+    }
+
+    /* Viewport bracket bar — separate element below ruler */
+    #vpBar {
+      position: fixed; top: 48px; left: 0; right: 0; height: 22px;
+      pointer-events: none; z-index: 9989; display: none;
+      align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.88);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    #vpBar.on { display: flex; }
+    #vpBarLine {
+      position: absolute;
+      left: 10px; right: 10px; top: 50%;
+      height: 1px; background: #ABABAB;
+      transform: translateY(-50%);
+    }
+    #vpBarLine::before {
+      content: ''; position: absolute; left: 0; top: -4px;
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-right: 7px solid #ABABAB;
+    }
+    #vpBarLine::after {
+      content: ''; position: absolute; right: 0; top: -4px;
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-left: 7px solid #ABABAB;
+    }
+    #vpBarLabel {
+      position: relative; z-index: 1;
+      font-size: 10px; font-weight: 800; color: #555;
+      background: rgba(255,255,255,0.96);
+      padding: 1px 10px; border-radius: 3px;
+      white-space: nowrap; letter-spacing: 0.03em;
+    }
+    .rzone {
+      position: absolute; top: 0; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1px; overflow: hidden; border-right: 1px solid rgba(255,255,255,0.5);
+    }
+    .rzone-name { font-size: 9px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1; opacity: 0.7; }
+    .rzone-val  { font-size: 13px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+    .rz-lnb    { background: rgba(83,74,183,0.18); color: #3730A3; }
+    .rz-pad    { background: rgba(234,88,12,0.18); color: #9a3412; }
+    .rz-inner  { background: rgba(83,74,183,0.07); color: #3730A3; border: 1px solid rgba(83,74,183,0.25); }
+    .rz-excess { background: rgba(239,68,68,0.12); color: #991B1B; }
+
+    #padGuideL, #padGuideR {
+      position: fixed; pointer-events: none; z-index: 9980; display: none;
+    }
+    #padGuideL.on, #padGuideR.on { display: flex; }
+    #padGuideL { background: rgba(234,88,12,0.1); align-items: flex-start; justify-content: center; padding-top: 10px; }
+    #padGuideR { background: rgba(234,88,12,0.1); align-items: flex-start; justify-content: center; padding-top: 10px; }
+
+    #excessGuide {
+      position: fixed; pointer-events: none; z-index: 9980;
+      background: rgba(239,68,68,0.06); border-left: 1.5px dashed rgba(239,68,68,0.35);
+      display: none; align-items: flex-start; justify-content: center; padding-top: 10px;
+    }
+    #excessGuide.on { display: flex; }
+
+    .guide-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; line-height: 1.4; }
+    .guide-badge-pad    { background: rgba(234,88,12,0.2); color: #9a3412; }
+    .guide-badge-excess { background: rgba(239,68,68,0.15); color: #991B1B; }
+
+
+    #gridOverlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; display: none; }
+    #gridOverlay.on { display: flex; }
+    .gcol { flex: 1; height: 100%; border-right: 1px solid rgba(83,74,183,0.13); background: rgba(83,74,183,0.04); }
+    .gcol:last-child { border-right: none; background: none; }
+
+    /* ===== Control Panel ===== */
+    .ctrl-panel {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #18181B; color: #fff; border-radius: 14px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06);
+      z-index: 9999; font-size: 12px; user-select: none; white-space: nowrap;
+      overflow-x: auto;
+    }
+    .ctrl-group { display: flex; align-items: center; gap: 6px; }
+    .ctrl-label { color: #71717A; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .ctrl-presets { display: flex; gap: 3px; }
+    .ctrl-btn {
+      height: 28px; padding: 0 10px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      color: #A1A1AA; background: transparent; border: 1px solid #3F3F46; cursor: pointer; transition: all 120ms;
+    }
+    .ctrl-btn:hover { background: #27272A; color: #fff; border-color: #52525B; }
+    .ctrl-btn.active { background: #534AB7; color: #fff; border-color: #534AB7; }
+    .ctrl-btn-sm {
+      height: 28px; padding: 0 10px; border-radius: 7px; font-size: 11px; font-weight: 600;
+      background: #27272A; color: #A1A1AA; border: 1px solid #3F3F46; cursor: pointer; transition: all 120ms;
+    }
+    .ctrl-btn-sm:hover { background: #3F3F46; color: #fff; }
+    .ctrl-btn-sm.active { background: #166534; color: #86efac; border-color: #166534; }
+    .ctrl-sep { width: 1px; height: 20px; background: #3F3F46; flex-shrink: 0; }
+
+    .ctrl-custom { display: flex; align-items: center; gap: 5px; }
+    .ctrl-custom input {
+      width: 72px; height: 28px; padding: 0 8px; border-radius: 7px;
+      border: 1px solid #3F3F46; background: #27272A; color: #fff;
+      font-size: 12px; font-weight: 600; outline: none; text-align: center;
+    }
+    .ctrl-custom input:focus { border-color: #534AB7; }
+    .ctrl-custom input::placeholder { color: #52525B; }
+
+    /* LNB width slider */
+    .lnb-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100px; height: 4px; background: #3F3F46; border-radius: 2px; outline: none; cursor: pointer;
+    }
+    .lnb-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 14px; height: 14px; background: #534AB7; border-radius: 50%; cursor: pointer;
+      box-shadow: 0 0 0 2px #18181B, 0 0 0 4px rgba(83,74,183,0.4);
+    }
+    .lnb-slider::-moz-range-thumb {
+      width: 14px; height: 14px; background: #534AB7; border: none;
+      border-radius: 50%; cursor: pointer;
+    }
+    .lnb-slider-val {
+      font-size: 13px; font-weight: 800; color: #C4B5FD; min-width: 40px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .col-input {
+      width: 44px; height: 24px; padding: 0 6px; border-radius: 5px;
+      border: 1px solid #3F3F46; background: #27272A; color: #A1A1AA;
+      font-size: 11px; font-weight: 600; outline: none; text-align: center;
+    }
+    .col-input:focus { border-color: #534AB7; color: #fff; }
+
+    .ctrl-info { display: flex; flex-direction: column; gap: 1px; }
+    .ctrl-info-row { display: flex; align-items: baseline; gap: 5px; font-size: 10px; color: #52525B; }
+    .ctrl-info-val { font-size: 13px; font-weight: 800; color: #E4E4E7; font-variant-numeric: tabular-nums; min-width: 56px; }
+    .ctrl-info-val.accent { color: #818CF8; }
+  </style>
+</head>
+<body>
+
+<!-- ===== Utility Bar ===== -->
+<div class="util-bar">
+  <a href="#">회원가입</a><span class="divider">|</span>
+  <a href="#">고객센터</a><span class="divider">|</span>
+  <a href="#" class="btn-login">로그인</a>
+</div>
+
+<!-- ===== Layout ===== -->
+<div class="layout">
+
+  <!-- LNB -->
+  <nav class="lnb" id="lnb">
+    <div class="lnb-header">
+      <span class="lnb-title" data-editable>기업서비스</span>
+      <button class="lnb-toggle" id="lnbToggle">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="lnb-cta">
+      <button>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="cta-text" data-editable>공고 등록</span>
+      </button>
+    </div>
+
+    <div class="lnb-nav">
+      <!-- 채용 관리 -->
+      <div class="nav-section">
+        <div class="section-label-row"><div class="section-label" data-editable>채용 관리</div></div>
+        <div class="nav-item active">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 5V4a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>전체 채용공고</span>
+          <span class="nav-tooltip">전체 채용공고</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="6.5" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 15c0-2.761 2.239-5 5-5h0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M16.5 15c0-2.761-2.239-5-5-5h0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>지원자 관리</span>
+          <span class="nav-badge">24</span>
+          <span class="nav-tooltip">지원자 관리</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 2v2M12 2v2M2 7h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>면접 캘린더</span>
+          <span class="nav-tooltip">면접 캘린더</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 5.5l7 7M12.5 5.5l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>차단내역</span>
+          <span class="nav-tooltip">차단내역</span>
+        </div>
+      </div>
+
+      <!-- 인재 검색 -->
+      <div class="nav-section">
+        <div class="section-label-row"><div class="section-label" data-editable>인재 검색</div></div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M12 12l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>인재 검색</span>
+          <span class="nav-tooltip">인재 검색</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2.5l1.854 3.756 4.146.603-3 2.924.708 4.131L9 11.75l-3.708 1.964.708-4.131-3-2.924 4.146-.603L9 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+          <span class="nav-label" data-editable>스크랩 인재</span>
+          <span class="nav-tooltip">스크랩 인재</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M15.5 2.5L8 10M15.5 2.5L10.5 15l-2.5-5-5-2.5 12.5-5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="nav-label" data-editable>포지션 제안 인재</span>
+          <span class="nav-tooltip">포지션 제안 인재</span>
+        </div>
+      </div>
+
+      <!-- 서비스 -->
+      <div class="nav-section">
+        <div class="section-label-row"><div class="section-label" data-editable>서비스</div></div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.854 3.756 4.146.603-3 2.924.708 4.131L9 11.75l-3.708 1.964.708-4.131L3 7.359l4.146-.603L9 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+          <span class="nav-label" data-editable>원픽 서비스</span>
+          <span class="nav-tooltip">원픽 서비스</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 16c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="14.5" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13 2l1.5 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>헤드헌팅 의뢰</span>
+          <span class="nav-tooltip">헤드헌팅 의뢰</span>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14V6.5L9 3l6 3.5V14a1 1 0 01-1 1H4a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 15V10h5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <span class="nav-label" data-editable>서비스 상품안내</span>
+          <span class="nav-tooltip">서비스 상품안내</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lnb-footer">
+      <div class="nav-item">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M9 1.5V3M9 15v1.5M1.5 9H3M15 9h1.5M3.697 3.697l1.06 1.06M13.243 13.243l1.06 1.06M3.697 14.303l1.06-1.06M13.243 4.757l1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+        <span class="nav-label" data-editable>기업정보 관리</span>
+        <span class="nav-tooltip">기업정보 관리</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="content" id="contentArea">
+    <div class="content-inner" id="contentInner">
+
+      <div id="gridOverlay"></div>
+
+      <div style="position:relative; z-index:2;">
+        <!-- 페이지 타이틀 + 액션 -->
+        <div class="page-title-area">
+          <div class="page-title"></div>
+          <div class="page-action"></div>
+        </div>
+        <!-- 툴바 (필터/탭 영역) -->
+        <div class="toolbar-area">
+          <div class="toolbar-chip" style="width:72px;"></div>
+          <div class="toolbar-chip" style="width:88px;"></div>
+          <div class="toolbar-chip" style="width:80px;"></div>
+        </div>
+        <!-- 주요 콘텐츠 블록 -->
+        <div class="main-block">
+          <span class="main-block-label">콘텐츠 영역</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Guide overlays -->
+<div id="ruler"></div>
+<div id="vpBar"><div id="vpBarLine"></div><div id="vpBarLabel"></div></div>
+<div id="padGuideL"><span class="guide-badge guide-badge-pad">32px</span></div>
+<div id="padGuideR"><span class="guide-badge guide-badge-pad" id="padRLabel">32px</span></div>
+<div id="excessGuide"><span class="guide-badge guide-badge-excess" id="excessLabel"></span></div>
+
+<!-- ===== Control Panel ===== -->
+<div class="ctrl-panel">
+
+  <!-- LNB 너비 + 콘텐츠 마진 -->
+  <div class="ctrl-group">
+    <span class="ctrl-label">LNB</span>
+    <input type="range" class="lnb-slider" id="lnbSlider" min="200" max="260" step="4" value="260">
+    <span class="lnb-slider-val" id="lnbSliderVal">260px</span>
+    <div class="ctrl-sep" style="height:16px; margin:0 2px;"></div>
+    <span class="ctrl-label">마진</span>
+    <input type="number" class="col-input" id="marginInput" value="32" min="0" max="80" step="4">
+    <span class="ctrl-label">px</span>
+  </div>
+
+  <div class="ctrl-sep"></div>
+
+  <!-- 콘텐츠 최대 너비 프리셋 -->
+  <div class="ctrl-group">
+    <span class="ctrl-label">콘텐츠 최대</span>
+    <div class="ctrl-presets" id="presets">
+      <button class="ctrl-btn" data-val="800">800</button>
+      <button class="ctrl-btn" data-val="960">960</button>
+      <button class="ctrl-btn" data-val="1024">1024</button>
+      <button class="ctrl-btn" data-val="1080">1080</button>
+      <button class="ctrl-btn" data-val="1200">1200</button>
+      <button class="ctrl-btn active" data-val="none">제한없음</button>
+    </div>
+  </div>
+
+  <div class="ctrl-sep"></div>
+
+  <!-- 직접 입력 -->
+  <div class="ctrl-custom">
+    <input type="number" id="customInput" placeholder="직접입력" min="400" max="1800" step="10">
+    <button class="ctrl-btn-sm" id="applyCustom">적용</button>
+  </div>
+
+  <div class="ctrl-sep"></div>
+
+  <!-- 가이드 + 컬럼 -->
+  <div class="ctrl-group">
+    <button class="ctrl-btn-sm" id="guideToggle">가이드 ON</button>
+    <span class="ctrl-label" style="margin-left:2px;">컬럼</span>
+    <input type="number" class="col-input" id="colCount" value="12" min="1" max="24">
+  </div>
+
+  <div class="ctrl-sep"></div>
+
+  <!-- 실시간 수치 -->
+  <div class="ctrl-info">
+    <div class="ctrl-info-row">뷰포트 <span class="ctrl-info-val" id="infoViewport">—</span></div>
+    <div class="ctrl-info-row">콘텐츠 너비 <span class="ctrl-info-val accent" id="infoActual">—</span></div>
+  </div>
+
+</div>
+
+<script>
+/* ─── LNB Width Slider ─── */
+const lnb         = document.getElementById('lnb');
+const lnbSlider   = document.getElementById('lnbSlider');
+const lnbSliderVal= document.getElementById('lnbSliderVal');
+let lnbExpandedW  = 260;
+
+function setLnbWidth(w) {
+  lnbExpandedW = w;
+  lnb.style.setProperty('--lnb-w', w + 'px');
+  lnbSlider.value    = w;
+  lnbSliderVal.textContent = w + 'px';
+  updateAll();
+}
+lnbSlider.addEventListener('input', () => setLnbWidth(Number(lnbSlider.value)));
+
+/* ─── LNB Toggle ─── */
+const lnbToggle = document.getElementById('lnbToggle');
+const LNB_KEY   = 'lnb_collapsed';
+if (localStorage.getItem(LNB_KEY) === 'true') lnb.classList.add('collapsed');
+lnbToggle.addEventListener('click', () => {
+  const c = lnb.classList.toggle('collapsed');
+  localStorage.setItem(LNB_KEY, c);
+  updateAll();
+});
+lnb.addEventListener('transitionend', updateAll);
+
+/* ─── Editable menu labels ─── */
+document.querySelectorAll('[data-editable]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (lnb.classList.contains('collapsed')) return;
+    e.stopPropagation();
+    this.contentEditable = 'true';
+    this.focus();
+    // Select all
+    const range = document.createRange();
+    range.selectNodeContents(this);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  });
+
+  el.addEventListener('blur', function() {
+    this.contentEditable = 'false';
+    // Sync tooltip if it's a nav-label
+    if (this.classList.contains('nav-label')) {
+      const tooltip = this.closest('.nav-item')?.querySelector('.nav-tooltip');
+      if (tooltip) tooltip.textContent = this.textContent.trim();
+    }
+  });
+
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+    if (e.key === 'Escape') { this.blur(); }
+  });
+});
+
+/* ─── Max-width control ─── */
+const contentArea   = document.getElementById('contentArea');
+const contentInner  = document.getElementById('contentInner');
+const presetBtns    = document.querySelectorAll('#presets .ctrl-btn');
+const customInput   = document.getElementById('customInput');
+const applyCustom   = document.getElementById('applyCustom');
+const infoActual    = document.getElementById('infoActual');
+const infoCollapsed = document.getElementById('infoCollapsed');
+let currentMaxW     = 'none';
+
+function applyMaxWidth(val) {
+  currentMaxW = val;
+  contentInner.style.maxWidth = val === 'none' ? '' : val + 'px';
+  presetBtns.forEach(b => b.classList.toggle('active', b.dataset.val === String(val)));
+  updateAll();
+}
+presetBtns.forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.val === 'none' ? 'none' : Number(b.dataset.val);
+  customInput.value = '';
+  applyMaxWidth(v);
+}));
+applyCustom.addEventListener('click', () => {
+  const v = parseInt(customInput.value, 10);
+  if (!isNaN(v) && v >= 200) { presetBtns.forEach(b => b.classList.remove('active')); applyMaxWidth(v); }
+});
+customInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyCustom.click(); });
+
+/* ─── Guide system ─── */
+const ruler       = document.getElementById('ruler');
+const padGuideL   = document.getElementById('padGuideL');
+const padGuideR   = document.getElementById('padGuideR');
+const excessGuide = document.getElementById('excessGuide');
+const gridOverlay = document.getElementById('gridOverlay');
+const padRLabel   = document.getElementById('padRLabel');
+const excessLabel = document.getElementById('excessLabel');
+const guideToggle = document.getElementById('guideToggle');
+const colCountIn  = document.getElementById('colCount');
+const marginInput = document.getElementById('marginInput');
+const utilBar     = document.querySelector('.util-bar');
+let guideOn = true;
+let contentPad = 32;
+let gridCols = 12;
+
+const vpBar = document.getElementById('vpBar');
+const vpBarLabel = document.getElementById('vpBarLabel');
+
+function setGuide(on) {
+  guideOn = on;
+  guideToggle.textContent = on ? '가이드 OFF' : '가이드 ON';
+  guideToggle.classList.toggle('active', on);
+  [ruler, vpBar, padGuideL, padGuideR, gridOverlay].forEach(el => el.classList.toggle('on', on));
+  if (on) updateGuides(); else excessGuide.classList.remove('on');
+}
+guideToggle.addEventListener('click', () => setGuide(!guideOn));
+
+function buildGrid() {
+  gridOverlay.innerHTML = '';
+  for (let i = 0; i < gridCols; i++) {
+    const col = document.createElement('div');
+    col.className = 'gcol';
+    gridOverlay.appendChild(col);
+  }
+}
+colCountIn.addEventListener('input', () => {
+  gridCols = Math.max(1, Math.min(24, parseInt(colCountIn.value) || 12));
+  buildGrid();
+});
+buildGrid();
+
+/* ─── Ruler zones ─── */
+function makeRzone(label, px, left, width, cls) {
+  const el = document.createElement('div');
+  el.className = `rzone ${cls}`;
+  el.style.left  = left  + 'px';
+  el.style.width = width + 'px';
+  el.innerHTML = `<div class="rzone-name">${label}</div><div class="rzone-val">${Math.round(px)}px</div>`;
+  return el;
+}
+
+/* ─── Main update ─── */
+function updateAll() {
+  const cRect = contentArea.getBoundingClientRect();
+  const iRect = contentInner.getBoundingClientRect();
+  const lRect = lnb.getBoundingClientRect();
+
+  const actualW = Math.round(iRect.width);
+  infoActual.textContent = actualW + 'px';
+  document.getElementById('infoViewport').textContent = window.innerWidth + 'px';
+
+  if (guideOn) updateGuides();
+}
+
+function updateGuides() {
+  const cRect = contentArea.getBoundingClientRect();
+  const iRect = contentInner.getBoundingClientRect();
+  const lRect = lnb.getBoundingClientRect();
+
+  const lnbW    = Math.round(lRect.width);
+  const leftPad = Math.round(iRect.left - cRect.left);
+  const innerW  = Math.round(iRect.width);
+  const excessW = Math.max(0, Math.round((cRect.right - leftPad) - iRect.right));
+  const rightPad= Math.round(cRect.right - iRect.right - excessW);
+
+  /* Ruler — rzone만 제거 (vpBar는 별도 요소) */
+  ruler.querySelectorAll('.rzone').forEach(el => el.remove());
+  ruler.appendChild(makeRzone('LNB', lnbW, lRect.left, lnbW, 'rz-lnb'));
+  ruler.appendChild(makeRzone('Left Pad', leftPad, cRect.left, leftPad, 'rz-pad'));
+  ruler.appendChild(makeRzone('콘텐츠', innerW, iRect.left, innerW, 'rz-inner'));
+  if (excessW > 0) ruler.appendChild(makeRzone('여백', excessW, iRect.right, excessW, 'rz-excess'));
+  ruler.appendChild(makeRzone('Right Pad', rightPad, cRect.right - rightPad, rightPad, 'rz-pad'));
+
+  /* Pad guides */
+  Object.assign(padGuideL.style, { left: cRect.left + 'px', width: leftPad + 'px', top: cRect.top + 'px', height: cRect.height + 'px' });
+  Object.assign(padGuideR.style, { left: (cRect.right - rightPad) + 'px', width: rightPad + 'px', top: cRect.top + 'px', height: cRect.height + 'px' });
+  padRLabel.textContent = rightPad + 'px';
+
+  /* Excess guide */
+  if (excessW > 0) {
+    Object.assign(excessGuide.style, { left: iRect.right + 'px', width: excessW + 'px', top: cRect.top + 'px', height: cRect.height + 'px' });
+    excessLabel.textContent = excessW + 'px 여백';
+    excessGuide.classList.add('on');
+  } else {
+    excessGuide.classList.remove('on');
+  }
+
+  /* Viewport bracket */
+  vpBarLabel.textContent = '← Viewport  ' + window.innerWidth + 'px →';
+}
+
+/* ─── Content margin control ─── */
+function applyContentPad(px) {
+  contentPad = px;
+  contentArea.style.paddingLeft  = px + 'px';
+  contentArea.style.paddingRight = px + 'px';
+  utilBar.style.paddingRight     = px + 'px';
+  marginInput.value = px;
+  updateAll();
+}
+marginInput.addEventListener('change', () => {
+  const v = Math.max(0, Math.min(80, parseInt(marginInput.value) || 0));
+  applyContentPad(v);
+});
+marginInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp')   { e.preventDefault(); applyContentPad(Math.min(80, contentPad + 4)); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); applyContentPad(Math.max(0,  contentPad - 4)); }
+});
+
+const ro = new ResizeObserver(updateAll);
+ro.observe(contentArea); ro.observe(contentInner); ro.observe(lnb);
+window.addEventListener('scroll', updateAll, { passive: true });
+window.addEventListener('resize', updateAll, { passive: true });
+
+/* ─── Init ─── */
+applyContentPad(32);
+setGuide(true);
+
+/* ─── Edit icon injection ─── */
+const pencilSVG = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7 3L9 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+</svg>`;
+
+document.querySelectorAll('[data-editable]').forEach(el => {
+  const icon = document.createElement('span');
+  icon.className = 'edit-icon';
+  icon.innerHTML = pencilSVG;
+  // section-label-row에 속한 경우 → row 안에 아이콘 추가
+  if (el.closest('.section-label-row')) {
+    el.closest('.section-label-row').appendChild(icon);
+  } else {
+    // nav-label, lnb-title, cta-text 등 → 바로 다음 형제로 삽입
+    el.insertAdjacentElement('afterend', icon);
+  }
+});
+</script>
+</body>
+</html>
