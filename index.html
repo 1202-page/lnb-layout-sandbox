@@ -170,38 +170,168 @@
     }
 
     /* ===== Content Area ===== */
-    .content { flex: 1; padding: 32px; background: #fff; min-width: 0; position: relative; }
+    .content { flex: 1; padding: 0; background: #fff; min-width: 0; position: relative; overflow-y: auto; }
     .content-inner { max-width: none; width: 100%; position: relative; }
 
-    /* Page content — wireframe */
-    .page-title-area {
+    /* ===== Corp/Main Styles ===== */
+
+    /* SmartPick Banner */
+    .corp-smartpick-banner {
+      display: block; width: 100%; background: #1A1A1A; overflow: hidden;
+      text-decoration: none; position: relative;
+    }
+    .corp-smartpick-banner img { display: block; width: 100%; max-height: 80px; object-fit: cover; object-position: center; }
+    .corp-smartpick-banner .banner-fallback {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px;
+      padding: 0 48px; height: 80px;
+      background: linear-gradient(90deg, #1A1165 0%, #2D1B8E 50%, #1A1165 100%);
     }
-    .page-title {
-      height: 28px; width: 160px;
-      background: #D4D4D4; border-radius: 5px;
+    .corp-smartpick-banner .banner-fallback .banner-text { color: #fff; font-size: 14px; line-height: 1.6; }
+    .corp-smartpick-banner .banner-fallback .banner-text strong { font-size: 16px; font-weight: 700; }
+    .corp-smartpick-banner .banner-fallback .banner-btn {
+      background: #fff; color: #1A1165; font-size: 13px; font-weight: 700;
+      padding: 8px 20px; border-radius: 20px; white-space: nowrap; text-decoration: none;
     }
-    .page-action {
-      height: 32px; width: 88px;
-      background: #C4BAF0; border-radius: 6px;
+
+    /* Hero section */
+    .corp-hero {
+      background: #F8F8FA; border-bottom: 1px solid #EBEBEB;
+      padding: 48px 48px 52px;
     }
-    .toolbar-area {
-      display: flex; gap: 8px; margin-bottom: 20px;
+    .corp-hero h1 {
+      font-size: 28px; font-weight: 800; color: #1A1A1A; line-height: 1.35; margin-bottom: 8px;
     }
-    .toolbar-chip {
-      height: 32px; border-radius: 6px; background: #E9E9E8;
+    .corp-hero h1 em { color: #E5001D; font-style: normal; }
+    .corp-hero p { font-size: 15px; color: #666; margin-bottom: 28px; }
+    .corp-hero-btns { display: flex; gap: 12px; }
+    .corp-hero-btns .btn-primary-corp {
+      background: #E5001D; color: #fff; font-size: 15px; font-weight: 700;
+      padding: 12px 28px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer;
     }
-    .main-block {
-      width: 100%; border-radius: 8px;
-      background: #F4F4F3;
-      border: 1.5px dashed #D4D4D4;
-      display: flex; align-items: center; justify-content: center;
-      min-height: calc(100vh - 300px);
+    .corp-hero-btns .btn-secondary-corp {
+      background: #fff; color: #333; font-size: 15px; font-weight: 600;
+      padding: 12px 28px; border-radius: 8px; text-decoration: none;
+      border: 1.5px solid #D0D0CE; cursor: pointer;
     }
-    .main-block-label {
-      font-size: 13px; color: #ABABAB; font-weight: 500; letter-spacing: 0.02em;
+    .corp-hero-btns .btn-primary-corp:hover { background: #C0001A; }
+    .corp-hero-btns .btn-secondary-corp:hover { border-color: #999; }
+
+    /* Service section */
+    .corp-section { padding: 48px 48px; }
+    .corp-section-title {
+      font-size: 20px; font-weight: 800; color: #1A1A1A; margin-bottom: 6px;
     }
+    .corp-section-desc { font-size: 14px; color: #888; margin-bottom: 28px; }
+
+    /* Service cards grid */
+    .corp-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .corp-card {
+      background: #fff; border: 1px solid #EBEBEB; border-radius: 12px;
+      padding: 24px; display: flex; flex-direction: column; gap: 12px;
+      transition: box-shadow 160ms, transform 160ms; cursor: pointer; text-decoration: none; color: inherit;
+    }
+    .corp-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+
+    .corp-card-badge {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+      border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .badge-new { background: #FFF0F2; color: #E5001D; }
+    .badge-ai  { background: #EEF2FF; color: #534AB7; }
+    .badge-hot { background: #FFF7E6; color: #D97706; }
+
+    .corp-card-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .icon-blue   { background: #EEF2FF; color: #534AB7; }
+    .icon-red    { background: #FFF0F2; color: #E5001D; }
+    .icon-yellow { background: #FFF7E6; color: #D97706; }
+    .icon-green  { background: #ECFDF5; color: #059669; }
+    .icon-purple { background: #F5F3FF; color: #7C3AED; }
+    .icon-gray   { background: #F4F4F3; color: #555; }
+
+    .corp-card-title { font-size: 16px; font-weight: 700; color: #1A1A1A; }
+    .corp-card-desc  { font-size: 13px; color: #888; line-height: 1.55; flex: 1; }
+    .corp-card-link  { font-size: 13px; font-weight: 600; color: #534AB7; display: flex; align-items: center; gap: 4px; }
+    .corp-card-link svg { transition: transform 160ms; }
+    .corp-card:hover .corp-card-link svg { transform: translateX(3px); }
+
+    /* Ninehire featured card */
+    .corp-card.featured {
+      background: linear-gradient(135deg, #534AB7 0%, #3730A3 100%);
+      border-color: transparent; color: #fff;
+    }
+    .corp-card.featured .corp-card-title { color: #fff; }
+    .corp-card.featured .corp-card-desc  { color: rgba(255,255,255,0.75); }
+    .corp-card.featured .corp-card-link  { color: #C4B5FD; }
+    .corp-card.featured .corp-card-badge { background: rgba(255,255,255,0.2); color: #fff; }
+    .corp-card.featured .corp-card-icon  { background: rgba(255,255,255,0.15); color: #fff; }
+    .corp-card.featured .kpi-highlight   { font-size: 24px; font-weight: 800; color: #fff; margin-top: 4px; }
+    .corp-card.featured .kpi-sub         { font-size: 12px; color: rgba(255,255,255,0.65); }
+
+    /* Divider */
+    .corp-divider { height: 8px; background: #F4F4F3; }
+
+    /* FAQ Section */
+    .corp-faq { padding: 48px 48px; }
+    .corp-faq .faq-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+    .corp-faq .faq-header h2 { font-size: 20px; font-weight: 800; color: #1A1A1A; }
+    .corp-faq .faq-header a  { font-size: 13px; color: #888; text-decoration: none; }
+    .corp-faq .faq-header a:hover { color: #534AB7; }
+
+    .faq-list { display: flex; flex-direction: column; gap: 0; border: 1px solid #EBEBEB; border-radius: 12px; overflow: hidden; }
+    .faq-item { border-bottom: 1px solid #EBEBEB; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; background: #fff; cursor: pointer; font-size: 14px;
+      font-weight: 600; color: #1A1A1A; text-align: left; gap: 12px;
+      border: none;
+    }
+    .faq-q:hover { background: #F8F8F7; }
+    .faq-q .faq-q-icon { color: #E5001D; font-weight: 800; flex-shrink: 0; font-size: 15px; }
+    .faq-q .faq-arrow { flex-shrink: 0; color: #ABABAB; transition: transform 200ms; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      padding: 0 20px 0 52px; max-height: 0; overflow: hidden;
+      transition: max-height 250ms ease, padding 250ms ease;
+      font-size: 13px; color: #555; line-height: 1.65;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 20px 16px 52px; }
+
+    /* Notice Section */
+    .corp-notice { padding: 48px 48px; background: #F8F8FA; }
+    .corp-notice .notice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .corp-notice .notice-header h2 { font-size: 20px; font-weight: 800; color: #1A1A1A; }
+    .corp-notice .notice-header a  { font-size: 13px; color: #888; text-decoration: none; }
+    .corp-notice .notice-header a:hover { color: #534AB7; }
+
+    .notice-list { display: flex; flex-direction: column; gap: 0; background: #fff; border: 1px solid #EBEBEB; border-radius: 12px; overflow: hidden; }
+    .notice-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 1px solid #F0F0EE; text-decoration: none;
+      color: inherit; font-size: 14px;
+    }
+    .notice-item:last-child { border-bottom: none; }
+    .notice-item:hover { background: #F8F8F7; }
+    .notice-item .notice-badge {
+      font-size: 11px; font-weight: 700; color: #E5001D; background: #FFF0F2;
+      padding: 2px 7px; border-radius: 4px; margin-right: 10px; flex-shrink: 0;
+    }
+    .notice-item .notice-title { flex: 1; color: #333; }
+    .notice-item .notice-date  { font-size: 12px; color: #ABABAB; flex-shrink: 0; margin-left: 16px; }
+
+    /* Corp footer (bottom of content) */
+    .corp-content-footer {
+      padding: 32px 48px; border-top: 1px solid #EBEBEB; background: #fff;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .corp-content-footer .cs-info { font-size: 13px; color: #666; }
+    .corp-content-footer .cs-info strong { display: block; font-size: 20px; font-weight: 800; color: #1A1A1A; margin-bottom: 2px; }
+    .corp-content-footer .cs-hours { font-size: 12px; color: #ABABAB; margin-top: 2px; }
 
     /* =====================================================
        GUIDE OVERLAY SYSTEM
@@ -461,21 +591,206 @@
 
       <div id="gridOverlay"></div>
 
-      <div style="position:relative; z-index:2;">
-        <!-- 페이지 타이틀 + 액션 -->
-        <div class="page-title-area">
-          <div class="page-title"></div>
-          <div class="page-action"></div>
+      <div id="gridOverlay"></div>
+
+      <!-- ── SmartPick Banner ── -->
+      <a class="corp-smartpick-banner" href="#">
+        <div class="banner-fallback">
+          <div class="banner-text">
+            <strong>스마트픽</strong><br>
+            성과에 기반한 채용 상품 스마트픽으로 채용의 효율을 높여보세요
+          </div>
+          <span class="banner-btn">자세히 보기 →</span>
         </div>
-        <!-- 툴바 (필터/탭 영역) -->
-        <div class="toolbar-area">
-          <div class="toolbar-chip" style="width:72px;"></div>
-          <div class="toolbar-chip" style="width:88px;"></div>
-          <div class="toolbar-chip" style="width:80px;"></div>
+      </a>
+
+      <!-- ── Hero ── -->
+      <div class="corp-hero">
+        <h1>지금, <em>우리기업의 채용</em>을<br>시작해 보세요</h1>
+        <p>잡코리아 기업서비스로 채용의 전 과정을 한곳에서 관리하세요.</p>
+        <div class="corp-hero-btns">
+          <a href="#" class="btn-primary-corp">채용공고 등록하기</a>
+          <a href="#" class="btn-secondary-corp">로그인</a>
         </div>
-        <!-- 주요 콘텐츠 블록 -->
-        <div class="main-block">
-          <span class="main-block-label">콘텐츠 영역</span>
+      </div>
+
+      <div class="corp-divider"></div>
+
+      <!-- ── Service Cards ── -->
+      <div class="corp-section">
+        <div class="corp-section-title">핵심 채용 솔루션</div>
+        <div class="corp-section-desc">잡코리아의 채용 서비스를 활용해 원하는 인재를 찾아보세요.</div>
+        <div class="corp-cards">
+
+          <!-- NineHire -->
+          <a href="#" class="corp-card featured">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="corp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 18V7l7-4 7 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6"/><path d="M8 22V13h6v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </div>
+              <span class="corp-card-badge">NEW</span>
+            </div>
+            <div class="corp-card-title">나인하이어 (NineHire)</div>
+            <div class="kpi-highlight">87.5%</div>
+            <div class="kpi-sub">채용 업무 시간 단축</div>
+            <div class="corp-card-desc">채용 자동화 솔루션으로 반복 업무를 줄이고 핵심 채용에 집중하세요.</div>
+            <div class="corp-card-link">자세히 보기 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <!-- 채용공고 등록 -->
+          <a href="#" class="corp-card">
+            <div class="corp-card-icon icon-red">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 11h6M11 9v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="corp-card-title">채용공고 등록</div>
+            <div class="corp-card-desc">쉽고 빠른 채용공고 등록으로 더 많은 지원자를 만나보세요. AI가 공고 작성을 도와드립니다.</div>
+            <div class="corp-card-link">공고 등록하기 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <!-- 원픽 -->
+          <a href="#" class="corp-card">
+            <div class="corp-card-icon icon-blue">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3l2.472 5.006 5.528.804-4 3.897.944 5.506L11 15.75l-4.944 2.463.944-5.506L3 8.81l5.528-.804L11 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="corp-card-badge badge-ai">AI 추천</span>
+            <div class="corp-card-title">원픽</div>
+            <div class="corp-card-desc">새로운 인재추천의 시작. AI가 기업 조건에 꼭 맞는 인재를 자동으로 추천해드립니다.</div>
+            <div class="corp-card-link">원픽 알아보기 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <!-- 지원자 관리 -->
+          <a href="#" class="corp-card">
+            <div class="corp-card-icon icon-green">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M2 19c0-3.866 2.686-7 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="16" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M20 19c0-3.866-2.686-7-6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="corp-card-title">지원자 관리</div>
+            <div class="corp-card-desc">한눈에 보는 지원자 현황. 서류·면접·최종합격까지 전 채용 단계를 체계적으로 관리하세요.</div>
+            <div class="corp-card-link">지원자 관리 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <!-- 인재검색 -->
+          <a href="#" class="corp-card">
+            <div class="corp-card-icon icon-yellow">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="corp-card-title">인재검색</div>
+            <div class="corp-card-desc">우리기업과 잘 맞는 인재를 직접 찾아보세요. 상세 조건 검색과 AI 추천으로 최적의 후보를 발굴합니다.</div>
+            <div class="corp-card-link">인재 검색하기 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <!-- 헤드헌팅 -->
+          <a href="#" class="corp-card">
+            <div class="corp-card-icon icon-purple">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="9" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="18.5" cy="5.5" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M17 3l1.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <span class="corp-card-badge badge-hot">PREMIUM</span>
+            <div class="corp-card-title">헤드헌팅 의뢰</div>
+            <div class="corp-card-desc">엄선된 헤드헌팅을 통한 인재추천. 경력직 핵심 인재를 전문 헤드헌터가 직접 찾아드립니다.</div>
+            <div class="corp-card-link">헤드헌팅 의뢰하기 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="corp-divider"></div>
+
+      <!-- ── FAQ ── -->
+      <div class="corp-faq">
+        <div class="faq-header">
+          <h2>잡코리아 채용 서비스가 궁금해요!</h2>
+          <a href="#">전체 FAQ 보기 →</a>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item open">
+            <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+              <span class="faq-q-icon">Q</span>
+              <span style="flex:1;">채용공고는 어떻게 등록하나요?</span>
+              <svg class="faq-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-a">회원가입 후 기업인증을 완료하면 바로 채용공고를 등록하실 수 있습니다. 상단 메뉴의 '공고 등록'을 클릭하여 직무, 자격요건, 우대사항 등을 입력하고 저장하면 즉시 게재됩니다. AI 작성 도우미를 활용하면 더욱 빠르게 공고를 완성할 수 있습니다.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+              <span class="faq-q-icon">Q</span>
+              <span style="flex:1;">온라인 채용시스템이란 무엇인가요?</span>
+              <svg class="faq-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-a">잡코리아 온라인 채용시스템(ATS)은 공고 등록부터 서류검토, 면접 일정 관리, 합격 통보까지 채용의 전 과정을 온라인에서 통합 관리할 수 있는 시스템입니다.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+              <span class="faq-q-icon">Q</span>
+              <span style="flex:1;">지원자에게 면접 일정을 어떻게 안내하나요?</span>
+              <svg class="faq-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-a">지원자 관리 화면에서 면접 캘린더를 통해 일정을 등록하면 지원자에게 자동으로 면접 안내 알림이 발송됩니다. 지원자가 일정을 확인하고 응답할 수 있어 일정 조율이 간편합니다.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+              <span class="faq-q-icon">Q</span>
+              <span style="flex:1;">원픽 서비스는 어떻게 이용하나요?</span>
+              <svg class="faq-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-a">원픽은 AI 기반 인재 추천 서비스로, 기업의 채용 조건을 분석해 적합한 후보자를 자동으로 매칭해드립니다. 서비스 신청 후 매칭된 인재에게 포지션 제안 메시지를 발송할 수 있습니다.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+              <span class="faq-q-icon">Q</span>
+              <span style="flex:1;">인재를 스크랩하면 어떻게 되나요?</span>
+              <svg class="faq-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-a">스크랩한 인재는 인재관리 > 스크랩 인재 메뉴에서 모아볼 수 있습니다. 이후 포지션 제안이나 채용 검토 시 다시 확인하기 편리합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="corp-divider"></div>
+
+      <!-- ── Notice ── -->
+      <div class="corp-notice">
+        <div class="notice-header">
+          <h2>공지사항</h2>
+          <a href="#">전체 보기 →</a>
+        </div>
+        <div class="notice-list">
+          <a href="#" class="notice-item">
+            <span class="notice-badge">공지</span>
+            <span class="notice-title">[필독] 2026년 채용공고 시스템 업데이트 안내</span>
+            <span class="notice-date">2026.05.12</span>
+          </a>
+          <a href="#" class="notice-item">
+            <span class="notice-badge">공지</span>
+            <span class="notice-title">개인정보처리방침 개정 안내 (2026년 5월)</span>
+            <span class="notice-date">2026.05.08</span>
+          </a>
+          <a href="#" class="notice-item">
+            <span class="notice-badge">이벤트</span>
+            <span class="notice-title">원픽 서비스 신규 가입 기업 대상 혜택 안내</span>
+            <span class="notice-date">2026.05.01</span>
+          </a>
+          <a href="#" class="notice-item">
+            <span class="notice-title" style="margin-left:0;">채용공고 게재 정책 변경 안내 (최대 게재 기간 60일)</span>
+            <span class="notice-date">2026.04.22</span>
+          </a>
+          <a href="#" class="notice-item">
+            <span class="notice-title" style="margin-left:0;">기업회원 서비스 점검 완료 안내</span>
+            <span class="notice-date">2026.04.15</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── Content Footer ── -->
+      <div class="corp-content-footer">
+        <div class="cs-info">
+          <strong>1588-9350</strong>
+          고객센터
+          <div class="cs-hours">평일 09:00 ~ 19:00 &nbsp;|&nbsp; 토요일 09:00 ~ 15:00</div>
+        </div>
+        <div style="display:flex;gap:16px;font-size:13px;color:#888;">
+          <a href="#" style="color:#888;text-decoration:none;">회사소개</a>
+          <a href="#" style="color:#888;text-decoration:none;">이용약관</a>
+          <a href="#" style="color:#888;text-decoration:none;">개인정보처리방침</a>
+          <a href="#" style="color:#888;text-decoration:none;">고객센터</a>
         </div>
       </div>
 
@@ -500,7 +815,7 @@
     <span class="lnb-slider-val" id="lnbSliderVal">260px</span>
     <div class="ctrl-sep" style="height:16px; margin:0 2px;"></div>
     <span class="ctrl-label">마진</span>
-    <input type="number" class="col-input" id="marginInput" value="32" min="0" max="80" step="4">
+    <input type="number" class="col-input" id="marginInput" value="0" min="0" max="80" step="4">
     <span class="ctrl-label">px</span>
   </div>
 
@@ -756,7 +1071,7 @@ window.addEventListener('scroll', updateAll, { passive: true });
 window.addEventListener('resize', updateAll, { passive: true });
 
 /* ─── Init ─── */
-applyContentPad(32);
+applyContentPad(0);
 setGuide(true);
 
 /* ─── Edit icon injection ─── */
